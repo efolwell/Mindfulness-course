@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     if (activity) {
         const baseGitHubRaw = "https://raw.githubusercontent.com/efolwell/mindfulness-course/main";
-        const h5pUrl = `${baseGitHubRaw}/my-h5p-content/${activity}/h5p.json`;
+        const h5pUrl = `${baseGitHubRaw}/my-h5p-content/${activity}/h5p.json`; // ✅ Corrected
 
         try {
             const response = await fetch(h5pUrl);
