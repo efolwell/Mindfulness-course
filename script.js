@@ -31,24 +31,25 @@ document.addEventListener('DOMContentLoaded', async function () {
                 h5pJsonPath: sanitizedH5PUrl,
                 frameJs: `${baseGitHubRaw}/h5p-standalone/dist/frame.bundle.js`,
                 frameCss: `${baseGitHubRaw}/h5p-standalone/dist/styles/h5p.css`,
-                librariesPath: `${baseGitHubRaw}/my-h5p-content/${activity}/libraries/`,
-                frameJsCss: {
-                    js: [
-                        `${baseGitHubRaw}/my-h5p-content/${activity}/libraries/H5P.InteractiveBook-1.11/dist/h5p-interactive-book.js`
-                    ],
-                    css: [
-                        `${baseGitHubRaw}/my-h5p-content/${activity}/libraries/H5P.InteractiveBook-1.11/dist/h5p-interactive-book.css`
-                    ]
-                }
+                librariesPath: `${baseGitHubRaw}/my-h5p-content/${activity}/libraries/`
             });
 
-            // ✅ Manually add CSS to fix missing styles
-            const link = document.createElement("link");
-            link.rel = "stylesheet";
-            link.href = `${baseGitHubRaw}/my-h5p-content/${activity}/libraries/H5P.InteractiveBook-1.11/dist/h5p-interactive-book.css`;
-            document.head.appendChild(link);
-
             console.log("🎉 H5P Activity Loaded Successfully!");
+
+            // ✅ Manually add the CSS if it's missing
+            const cssUrl = `${baseGitHubRaw}/my-h5p-content/${activity}/libraries/H5P.InteractiveBook-1.11/dist/h5p-interactive-book.css`;
+            console.log("🔍 DEBUG: Checking if CSS exists:", cssUrl);
+            
+            const cssTest = await fetch(cssUrl);
+            if (cssTest.ok) {
+                console.log("✅ CSS File Exists, Injecting into the Page...");
+                const link = document.createElement("link");
+                link.rel = "stylesheet";
+                link.href = cssUrl;
+                document.head.appendChild(link);
+            } else {
+                console.error("❌ CSS File is Missing:", cssUrl);
+            }
 
         } catch (error) {
             console.error("❌ Error loading H5P:", error);
