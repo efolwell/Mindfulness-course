@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     if (activity) {
         const baseGitHubPages = "https://efolwell.github.io/mindfulness-course"; // ✅ GitHub Pages Base URL
-        let h5pUrl = `${baseGitHubPages}/docs/my-h5p-content/${activity}/h5p.json`; // ✅ New path
+        let h5pUrl = `${baseGitHubPages}/my-h5p-content/${activity}/h5p.json`; // ✅ New path
 
         console.log("🔍 DEBUG: Generated h5pUrl =", h5pUrl);
 
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 h5pJsonPath: h5pUrl,
                 frameJs: `${baseGitHubPages}/h5p-standalone/dist/frame.bundle.js`,
                 frameCss: `${baseGitHubPages}/h5p-standalone/dist/styles/h5p.css`,
-                librariesPath: `${baseGitHubPages}/docs/my-h5p-content/${activity}/libraries/`
+                librariesPath: `${baseGitHubPages}/my-h5p-content/${activity}/libraries/`
             });
 
             console.log("🎉 H5P Activity Loaded Successfully!");
