@@ -1,6 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Corrected URL with case-sensitive fix
-    const h5pUrl = "https://efolwell.github.io/Mindfulness-course/my-h5p-content/activity1/h5p.json";
+    // Get activity from URL (if available)
+    const urlParams = new URLSearchParams(window.location.search);
+    const activity = urlParams.get("activity") || "activity1"; // Default to activity1 if none provided
+
+    // Corrected H5P URL (Ensure correct capitalization!)
+    const h5pUrl = `https://efolwell.github.io/Mindfulness-course/my-h5p-content/${activity}/h5p.json`;
 
     console.log("🔍 DEBUG: Fetching H5P JSON from:", h5pUrl);
 
@@ -21,16 +25,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            // 🔹 Initialize H5P content
+            // 🔹 Fix path error by setting correct structure
             new H5PStandalone.H5P(h5pContainer, {
-                h5pJsonPath: h5pUrl, // JSON file path
+                h5pJsonPath: `https://efolwell.github.io/Mindfulness-course/my-h5p-content/${activity}`, // Fix double JSON path issue
                 frameJs: "https://cdn.jsdelivr.net/npm/h5p-standalone@1.3.0/dist/main.bundle.js",
-                frameCss: "https://cdn.jsdelivr.net/npm/h5p-standalone@1.3.0/dist/styles/h5p.css",
-                contentJson: data // Load the fetched JSON data directly
+                frameCss: "https://cdn.jsdelivr.net/npm/h5p-standalone@1.3.0/dist/styles/h5p.css"
             });
 
             console.log("🎉 H5P content should now be displayed!");
-
         })
         .catch(error => {
             console.error("❌ Error loading H5P:", error);
