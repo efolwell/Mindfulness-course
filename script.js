@@ -10,26 +10,36 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     if (activity) {
         const baseGitHubRaw = "https://raw.githubusercontent.com/efolwell/mindfulness-course/main";
-        const h5pUrl = `${baseGitHubRaw}/my-h5p-content/${activity}/h5p.json`; // ✅ Correct URL
+        const h5pUrl = `${baseGitHubRaw}/my-h5p-content/${activity}/h5p.json`;
         const librariesUrl = `${baseGitHubRaw}/my-h5p-content/${activity}/libraries/`;
 
         try {
-            console.log("Fetching H5P JSON from:", h5pUrl); // ✅ Debugging
+            console.log("Fetching H5P JSON from:", h5pUrl);
             const response = await fetch(h5pUrl);
             if (!response.ok) throw new Error("H5P JSON File not found");
 
             new H5PStandalone.H5P(container, {
-                h5pJsonPath: h5pUrl, // ✅ Ensure this does not append another /h5p.json
+                h5pJsonPath: h5pUrl,
                 frameJs: `${baseGitHubRaw}/h5p-standalone/dist/frame.bundle.js`,
                 frameCss: `${baseGitHubRaw}/h5p-standalone/dist/styles/h5p.css`,
-                librariesPath: librariesUrl
+                librariesPath: librariesUrl,
+                frameJsCss: {
+                    js: [
+                        `${librariesUrl}H5P.InteractiveBook-1.11/dist/h5p-interactive-book.js`, // ✅ Load Interactive Book JS
+                        `${librariesUrl}H5P.Video-1.6/dist/h5p-video.js` // ✅ Load Video Library
+                    ],
+                    css: [
+                        `${librariesUrl}H5P.InteractiveBook-1.11/dist/h5p-interactive-book.css`, // ✅ Load Interactive Book CSS
+                        `${librariesUrl}H5P.Video-1.6/dist/h5p-video.css` // ✅ Load Video Library CSS
+                    ]
+                }
             });
 
-            console.log("H5P Activity Loaded Successfully! 🎉"); // ✅ Debugging Success Message
+            console.log("H5P Activity Loaded Successfully! 🎉");
 
         } catch (error) {
             container.innerHTML = `<p>Error loading H5P activity: ${error.message}</p>`;
-            console.error("Error loading H5P:", error); // ❌ Debugging Error Message
+            console.error("Error loading H5P:", error);
         }
     } else {
         container.innerHTML = '<p>Error: Activity not found.</p>';
