@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
         container.innerHTML = ''; // Clear previous content
         if (activity) {
             new H5PStandalone.H5P(container, {
-                h5pJsonPath: `my-h5p-content/${activity}`,
+                h5pJsonPath: `https://raw.githubusercontent.com/efolwell/Mindfulness-course/refs/heads/main/my-h5p-content/activity1/h5p.json`, 
                 frameJs: 'h5p-standalone/dist/frame.bundle.js',
                 frameCss: 'h5p-standalone/dist/styles/h5p.css'
             });
