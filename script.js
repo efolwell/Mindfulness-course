@@ -25,15 +25,28 @@ document.addEventListener('DOMContentLoaded', async function () {
 
             // ✅ Ensure H5PStandalone does NOT modify `h5pJsonPath`
             const sanitizedH5PUrl = h5pUrl.endsWith("/h5p.json") ? h5pUrl.slice(0, -9) : h5pUrl;
-
             console.log("🔍 DEBUG: Final sanitized H5P URL =", sanitizedH5PUrl);
 
             new H5PStandalone.H5P(container, {
-                h5pJsonPath: sanitizedH5PUrl, // ✅ This ensures no extra /h5p.json
+                h5pJsonPath: sanitizedH5PUrl,
                 frameJs: `${baseGitHubRaw}/h5p-standalone/dist/frame.bundle.js`,
                 frameCss: `${baseGitHubRaw}/h5p-standalone/dist/styles/h5p.css`,
-                librariesPath: `${baseGitHubRaw}/my-h5p-content/${activity}/libraries/`
+                librariesPath: `${baseGitHubRaw}/my-h5p-content/${activity}/libraries/`,
+                frameJsCss: {
+                    js: [
+                        `${baseGitHubRaw}/my-h5p-content/${activity}/libraries/H5P.InteractiveBook-1.11/dist/h5p-interactive-book.js`
+                    ],
+                    css: [
+                        `${baseGitHubRaw}/my-h5p-content/${activity}/libraries/H5P.InteractiveBook-1.11/dist/h5p-interactive-book.css`
+                    ]
+                }
             });
+
+            // ✅ Manually add CSS to fix missing styles
+            const link = document.createElement("link");
+            link.rel = "stylesheet";
+            link.href = `${baseGitHubRaw}/my-h5p-content/${activity}/libraries/H5P.InteractiveBook-1.11/dist/h5p-interactive-book.css`;
+            document.head.appendChild(link);
 
             console.log("🎉 H5P Activity Loaded Successfully!");
 
