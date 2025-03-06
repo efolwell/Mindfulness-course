@@ -9,13 +9,10 @@ document.addEventListener('DOMContentLoaded', async function () {
     const activity = getQueryParam('activity');
 
     if (activity) {
-        const baseGitHubRaw = "https://raw.githubusercontent.com/efolwell/mindfulness-course/main";
-        let h5pUrl = `${baseGitHubRaw}/my-h5p-content/${activity}/h5p.json`;
+        const baseGitHubPages = "https://efolwell.github.io/mindfulness-course"; // ✅ GitHub Pages URL
+        let h5pUrl = `${baseGitHubPages}/my-h5p-content/${activity}/h5p.json`;
 
         console.log("🔍 DEBUG: Initial Generated h5pUrl =", h5pUrl);
-
-        // ✅ Fix the CSS file issue
-        const cssUrl = `${baseGitHubRaw}/my-h5p-content/${activity}/libraries/H5P.InteractiveBook-1.11/dist/h5p-interactive-book.css`;
 
         try {
             console.log("Fetching H5P JSON from:", h5pUrl);
@@ -24,14 +21,17 @@ document.addEventListener('DOMContentLoaded', async function () {
 
             new H5PStandalone.H5P(container, {
                 h5pJsonPath: h5pUrl,
-                frameJs: `${baseGitHubRaw}/h5p-standalone/dist/frame.bundle.js`,
-                frameCss: `${baseGitHubRaw}/h5p-standalone/dist/styles/h5p.css`,
-                librariesPath: `${baseGitHubRaw}/my-h5p-content/${activity}/libraries/`
+                frameJs: `${baseGitHubPages}/h5p-standalone/dist/frame.bundle.js`,
+                frameCss: `${baseGitHubPages}/h5p-standalone/dist/styles/h5p.css`,
+                librariesPath: `${baseGitHubPages}/my-h5p-content/${activity}/libraries/`
             });
 
             console.log("🎉 H5P Activity Loaded Successfully!");
 
-            // ✅ Manually Inject CSS into Page Head
+            // ✅ Manually Inject CSS if not loaded
+            const cssUrl = `${baseGitHubPages}/my-h5p-content/${activity}/libraries/H5P.InteractiveBook-1.11/dist/h5p-interactive-book.css`;
+            console.log("🔍 DEBUG: Checking if CSS exists:", cssUrl);
+
             const link = document.createElement("link");
             link.rel = "stylesheet";
             link.href = cssUrl;
