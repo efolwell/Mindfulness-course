@@ -10,17 +10,27 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     if (activity) {
         const baseGitHubRaw = "https://raw.githubusercontent.com/efolwell/mindfulness-course/main";
-        const h5pUrl = `${baseGitHubRaw}/my-h5p-content/${activity}/h5p.json`; // 
+        const h5pUrl = `${baseGitHubRaw}/my-h5p-content/${activity}/h5p.json`;
+        const librariesUrl = `${baseGitHubRaw}/my-h5p-content/${activity}/libraries/`;
 
         try {
             const response = await fetch(h5pUrl);
             if (!response.ok) throw new Error("File not found");
 
             new H5PStandalone.H5P(container, {
-                h5pJsonPath: h5pUrl, // 
+                h5pJsonPath: h5pUrl,
                 frameJs: `${baseGitHubRaw}/h5p-standalone/dist/frame.bundle.js`,
                 frameCss: `${baseGitHubRaw}/h5p-standalone/dist/styles/h5p.css`,
-                librariesPath: `${baseGitHubRaw}/my-h5p-content/${activity}/libraries/`
+                librariesPath: librariesUrl,
+                contentJsonPath: h5pUrl, // ✅ Ensure content JSON is loaded
+                frameJsCss: {
+                    js: [
+                        `${librariesUrl}H5P.InteractiveBook-1.11/dist/h5p-interactive-book.js` // ✅ Added JS
+                    ],
+                    css: [
+                        `${librariesUrl}H5P.InteractiveBook-1.11/dist/h5p-interactive-book.css` // ✅ Added CSS
+                    ]
+                }
             });
 
         } catch (error) {
