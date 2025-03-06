@@ -1,38 +1,20 @@
-document.addEventListener('DOMContentLoaded', async function () {
-    const container = document.getElementById('h5p-container');
+document.addEventListener("DOMContentLoaded", function () {
+    const h5pUrl = "https://efolwell.github.io/mindfulness-course/my-h5p-content/activity1/h5p.json";
 
-    function getQueryParam(param) {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get(param);
-    }
+    console.log("🔍 DEBUG: Fetching H5P JSON from:", h5pUrl);
 
-    const activity = getQueryParam('activity');
-
-    if (activity) {
-        const baseGitHubPages = "https://efolwell.github.io/mindfulness-course"; // ✅ GitHub Pages Base URL
-        let h5pUrl = `${baseGitHubPages}/my-h5p-content/${activity}/h5p.json`; // ✅ New path
-
-        console.log("🔍 DEBUG: Generated h5pUrl =", h5pUrl);
-
-        try {
-            console.log("Fetching H5P JSON from:", h5pUrl);
-            const response = await fetch(h5pUrl);
-            if (!response.ok) throw new Error("H5P JSON File not found");
-
-            new H5PStandalone.H5P(container, {
-                h5pJsonPath: h5pUrl,
-                frameJs: `${baseGitHubPages}/h5p-standalone/dist/frame.bundle.js`,
-                frameCss: `${baseGitHubPages}/h5p-standalone/dist/styles/h5p.css`,
-                librariesPath: `${baseGitHubPages}/my-h5p-content/${activity}/libraries/`
-            });
-
-            console.log("🎉 H5P Activity Loaded Successfully!");
-
-        } catch (error) {
+    fetch(h5pUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`H5P JSON File not found (HTTP ${response.status})`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("✅ H5P JSON Loaded:", data);
+            // Handle the loaded H5P data here
+        })
+        .catch(error => {
             console.error("❌ Error loading H5P:", error);
-            container.innerHTML = `<p>Error loading H5P activity: ${error.message}</p>`;
-        }
-    } else {
-        container.innerHTML = '<p>Error: Activity not found.</p>';
-    }
+        });
 });
