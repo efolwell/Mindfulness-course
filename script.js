@@ -23,8 +23,13 @@ document.addEventListener('DOMContentLoaded', async function () {
             const response = await fetch(h5pUrl);
             if (!response.ok) throw new Error("H5P JSON File not found");
 
+            // ✅ Ensure H5PStandalone does NOT modify `h5pJsonPath`
+            const sanitizedH5PUrl = h5pUrl.endsWith("/h5p.json") ? h5pUrl.slice(0, -9) : h5pUrl;
+
+            console.log("🔍 DEBUG: Final sanitized H5P URL =", sanitizedH5PUrl);
+
             new H5PStandalone.H5P(container, {
-                h5pJsonPath: h5pUrl, // ✅ Fixed path (no extra /h5p.json)
+                h5pJsonPath: sanitizedH5PUrl, // ✅ This ensures no extra /h5p.json
                 frameJs: `${baseGitHubRaw}/h5p-standalone/dist/frame.bundle.js`,
                 frameCss: `${baseGitHubRaw}/h5p-standalone/dist/styles/h5p.css`,
                 librariesPath: `${baseGitHubRaw}/my-h5p-content/${activity}/libraries/`
