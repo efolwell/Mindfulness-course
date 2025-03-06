@@ -5,16 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>H5P Activities</title>
 
-    <!-- H5P Core CSS -->
+    <!-- ✅ Ensure CSS loads before JavaScript -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/h5p-standalone@1.3.0/dist/styles/h5p.css" as="style">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/h5p-standalone@1.3.0/dist/styles/h5p.css">
 
-    <!-- H5P Core JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/h5p-standalone@1.3.0/dist/main.bundle.js"></script>
+    <!-- ✅ Include Custom Styling (if any) -->
+    <link rel="stylesheet" href="styles.css">
 
-    <link rel="stylesheet" href="styles.css"> <!-- Optional: Add styling -->
-    <!-- H5P Core Styles (Manually Added) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/h5p-standalone@1.3.0/dist/styles/h5p.css">
-
+    <!-- ✅ Ensure H5P Scripts Load After Page -->
+    <script defer src="https://cdn.jsdelivr.net/npm/h5p-standalone@1.3.0/dist/main.bundle.js"></script>
 </head>
 <body>
 
@@ -31,7 +30,7 @@
     <!-- 🔹 Section to Display H5P Content -->
     <div id="h5p-container"></div>
 
-    <!-- Include JavaScript -->
+    <!-- ✅ Ensure JavaScript Loads After Page Content -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             // Get activity from URL (if available)
@@ -42,6 +41,13 @@
             const h5pUrl = `https://efolwell.github.io/Mindfulness-course/my-h5p-content/${activity}/h5p.json`;
 
             console.log("🔍 DEBUG: Fetching H5P JSON from:", h5pUrl);
+
+            // ✅ Check if stylesheet loaded correctly before initializing H5P
+            const h5pCss = document.querySelector('link[href="https://cdn.jsdelivr.net/npm/h5p-standalone@1.3.0/dist/styles/h5p.css"]');
+            if (!h5pCss || h5pCss.sheet === null) {
+                console.error("❌ H5P CSS failed to load! H5P content may not display correctly.");
+                return; // Stop execution if styles fail to load
+            }
 
             fetch(h5pUrl)
                 .then(response => {
@@ -60,15 +66,18 @@
                         return;
                     }
 
-                    // 🔹 Initialize H5P content
-                    new H5PStandalone.H5P(h5pContainer, {
-                        h5pJsonPath: h5pUrl, // JSON file path
-                        frameJs: "https://cdn.jsdelivr.net/npm/h5p-standalone@1.3.0/dist/main.bundle.js",
-                        frameCss: "https://cdn.jsdelivr.net/npm/h5p-standalone@1.3.0/dist/styles/h5p.css",
-                        contentJson: data // Load the fetched JSON data directly
-                    });
+                    // 🔹 Initialize H5P content (Delay slightly to ensure CSS is applied)
+                    setTimeout(() => {
+                        new H5PStandalone.H5P(h5pContainer, {
+                            h5pJsonPath: h5pUrl, // JSON file path
+                            frameJs: "https://cdn.jsdelivr.net/npm/h5p-standalone@1.3.0/dist/main.bundle.js",
+                            frameCss: "https://cdn.jsdelivr.net/npm/h5p-standalone@1.3.0/dist/styles/h5p.css",
+                            contentJson: data // Load the fetched JSON data directly
+                        });
 
-                    console.log("🎉 H5P content should now be displayed!");
+                        console.log("🎉 H5P content should now be displayed!");
+                    }, 500); // ✅ Delay ensures CSS is applied before H5P initializes
+
                 })
                 .catch(error => {
                     console.error("❌ Error loading H5P:", error);
