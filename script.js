@@ -17,14 +17,14 @@ document.addEventListener('DOMContentLoaded', async function () {
             if (!response.ok) throw new Error("File not found");
 
             new H5PStandalone.H5P(container, {
-                h5pJsonPath: h5pUrl,
+                h5pJsonPath: h5pUrl, // ✅ No extra /h5p.json appended
                 frameJs: `${baseGitHubRaw}/h5p-standalone/dist/frame.bundle.js`,
                 frameCss: `${baseGitHubRaw}/h5p-standalone/dist/styles/h5p.css`,
                 librariesPath: `${baseGitHubRaw}/my-h5p-content/${activity}/libraries/`
             });
 
         } catch (error) {
-            container.innerHTML = '<p>Error loading H5P activity.</p>';
+            container.innerHTML = `<p>Error loading H5P activity: ${error.message}</p>`;
         }
     } else {
         container.innerHTML = '<p>Error: Activity not found.</p>';
