@@ -25,9 +25,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            // 🔹 Fix the incorrect path issue
+            // 🔹 FIX: Ensure correct path to H5P JSON folder
+            const h5pFolderUrl = `https://efolwell.github.io/Mindfulness-course/my-h5p-content/${activity}`;
+
             new H5PStandalone.H5P(h5pContainer, {
-                h5pJsonPath: `https://efolwell.github.io/Mindfulness-course/my-h5p-content/${activity}`, // This should be the directory, NOT the file itself
+                h5pJsonPath: h5pFolderUrl, // This is the directory path, NOT the file itself
                 frameJs: "https://cdn.jsdelivr.net/npm/h5p-standalone@1.3.0/dist/main.bundle.js",
                 frameCss: "https://cdn.jsdelivr.net/npm/h5p-standalone@1.3.0/dist/styles/h5p.css"
             });
