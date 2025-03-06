@@ -9,6 +9,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     console.log("🔍 DEBUG: Fetching H5P JSON from:", `${h5pFolderUrl}/h5p.json`);
 
+    // ✅ Ensure stylesheet is fully loaded before running H5P
+    const h5pCss = document.querySelector('link[href="https://cdn.jsdelivr.net/npm/h5p-standalone@1.3.0/dist/styles/h5p.css"]');
+    if (!h5pCss || h5pCss.sheet === null) {
+        console.error("❌ H5P CSS failed to load! H5P content may not display correctly.");
+        return; // Stop execution if styles fail to load
+    }
+
     fetch(`${h5pFolderUrl}/h5p.json`)
         .then(response => {
             if (!response.ok) {
@@ -39,16 +46,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // 🔹 Fix CORB issue by using CORS-compliant H5P scripts
             const corsSafeFrameJs = "https://cdn.jsdelivr.net/npm/h5p-standalone@1.3.0/dist/main.bundle.js";
+            const corsSafeFrameCss = "https://cdn.jsdelivr.net/npm/h5p-standalone@1.3.0/dist/styles/h5p.css";
 
-            // 🔹 Tell H5P exactly where to find its library files
-            new H5PStandalone.H5P(h5pContainer, {
-                h5pJsonPath: h5pFolderUrl,  
-                librariesPath: librariesUrl, // 🔹 Explicitly set the correct libraries path
-                frameJs: corsSafeFrameJs, // ✅ CORS-SAFE SCRIPT
-                preloadedDependencies: fixedDependencies, // 🔹 Inject the correct paths for dependencies
-            });
+            // 🔹 Ensure H5P runs only after a slight delay to prevent race conditions
+            setTimeout(() => {
+                new H5PStandalone.H5P(h5pContainer, {
+                    h5pJsonPath: h5pFolderUrl,  
+                    librariesPath: librariesUrl, // 🔹 Explicitly set the correct libraries path
+                    frameJs: corsSafeFrameJs, // ✅ CORS-SAFE SCRIPT
+                    frameCss: corsSafeFrameCss, // ✅ Ensures correct styling
+                    preloadedDependencies: fixedDependencies, // 🔹 Inject the correct paths for dependencies
+                });
 
-            console.log("🎉 H5P content should now be displayed!");
+                console.log("🎉 H5P content should now be displayed!");
+            }, 500); // ✅ Delay ensures everything loads properly
         })
         .catch(error => {
             console.error("❌ Error loading H5P:", error);
