@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const h5pUrl = "https://efolwell.github.io/mindfulness-course/my-h5p-content/activity1/h5p.json";
+    // Corrected URL with proper capitalization
+    const h5pUrl = "https://efolwell.github.io/Mindfulness-course/my-h5p-content/activity1/h5p.json";
 
     console.log("🔍 DEBUG: Fetching H5P JSON from:", h5pUrl);
 
