@@ -37,12 +37,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
             console.log("🛠 Fixing dependencies:", fixedDependencies);
 
+            // 🔹 Fix CORB issue by using CORS-compliant H5P scripts
+            const corsSafeFrameJs = "https://cdn.jsdelivr.net/npm/h5p-standalone@1.3.0/dist/main.bundle.js";
+            const corsSafeFrameCss = "https://cdn.jsdelivr.net/npm/h5p-standalone@1.3.0/dist/styles/h5p.css";
+
             // 🔹 Tell H5P exactly where to find its library files
             new H5PStandalone.H5P(h5pContainer, {
                 h5pJsonPath: h5pFolderUrl,  
                 librariesPath: librariesUrl, // 🔹 Explicitly set the correct libraries path
-                frameJs: "https://cdn.jsdelivr.net/npm/h5p-standalone@1.3.0/dist/main.bundle.js",
-                frameCss: "https://cdn.jsdelivr.net/npm/h5p-standalone@1.3.0/dist/styles/h5p.css",
+                frameJs: corsSafeFrameJs, // ✅ CORS-SAFE SCRIPT
+                frameCss: corsSafeFrameCss, // ✅ CORS-SAFE STYLES
                 preloadedDependencies: fixedDependencies, // 🔹 Inject the correct paths for dependencies
             });
 
