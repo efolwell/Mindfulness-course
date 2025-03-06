@@ -3,25 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>H5P Standalone - Multiple Activities</title>
-    <link rel="stylesheet" href="h5p-standalone/dist/styles/h5p.css">
+    <title>H5P Activities</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Optional: Add styling -->
 </head>
 <body>
 
-    <h1>Select an H5P Activity</h1>
+    <h1>H5P Activities</h1>
+    <p>Click on an activity to open it:</p>
 
-    <select id="h5p-selector">
-        <option value="">-- Choose an activity --</option>
-        <option value="activity1">Activity 1</option>
-        <option value="activity2">Activity 2</option>
-        <option value="activity3">Activity 3</option>
-        <option value="activity4">Activity 4</option>
-    </select>
-
-    <div id="h5p-container"></div>
-
-    <script src="h5p-standalone/dist/main.bundle.js"></script>
-    <script src="script.js"></script>
+    <ul>
+        <li><a href="activity.html?activity=activity1">Activity 1</a></li>
+        <li><a href="activity.html?activity=activity2">Activity 2</a></li>
+        <li><a href="activity.html?activity=activity3">Activity 3</a></li>
+        <li><a href="activity.html?activity=activity4">Activity 4</a></li>
+    </ul>
 
 </body>
 </html>
