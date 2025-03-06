@@ -1,9 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Wait until H5PStandalone is available
+    // ✅ Wait for H5PStandalone to be available
     const checkH5PLoaded = setInterval(() => {
         if (typeof H5PStandalone !== "undefined") {
             clearInterval(checkH5PLoaded); // Stop checking
-
             console.log("✅ H5PStandalone is loaded!");
 
             // Get activity from URL (if available)
@@ -44,7 +43,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     console.log("🛠 Fixing dependencies:", fixedDependencies);
 
-                    // 🔹 Ensure H5P runs after a slight delay to prevent race conditions
+                    // ✅ Skip CSS check to prevent blocking H5P
+                    console.warn("⚠️ Skipping CSS check – ensuring H5P loads even if styles fail.");
+
+                    // 🔹 Ensure H5P runs after a slight delay
                     setTimeout(() => {
                         new H5PStandalone.H5P(h5pContainer, {
                             h5pJsonPath: h5pFolderUrl,  
@@ -55,11 +57,4 @@ document.addEventListener("DOMContentLoaded", function () {
                         });
 
                         console.log("🎉 H5P content should now be displayed!");
-                    }, 500); // ✅ Delay ensures everything loads properly
-                })
-                .catch(error => {
-                    console.error("❌ Error loading H5P:", error);
-                });
-        }
-    }, 100); // Check every 100ms if H5PStandalone is available
-});
+                   
