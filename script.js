@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // ✅ Wait for H5PStandalone to be available
+    // ✅ Ensure H5PStandalone is available before running
     const checkH5PLoaded = setInterval(() => {
         if (typeof H5PStandalone !== "undefined") {
             clearInterval(checkH5PLoaded); // Stop checking
@@ -43,11 +43,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     console.log("🛠 Fixing dependencies:", fixedDependencies);
 
-                    // ✅ Skip CSS check to prevent blocking H5P
-                    console.warn("⚠️ Skipping CSS check – ensuring H5P loads even if styles fail.");
-
-                    // 🔹 Ensure H5P runs after a slight delay
+                    // ✅ Check if H5P stylesheet loaded successfully
                     setTimeout(() => {
+                        const h5pStylesheet = document.querySelector('link[href*="h5p.css"]');
+                        if (!h5pStylesheet || h5pStylesheet.sheet === null) {
+                            console.error("❌ H5P CSS still not loading. Styles may be broken.");
+                        } else {
+                            console.log("✅ H5P CSS is now loading correctly.");
+                        }
+
+                        // 🔹 Ensure H5P runs after a slight delay
                         new H5PStandalone.H5P(h5pContainer, {
                             h5pJsonPath: h5pFolderUrl,  
                             librariesPath: librariesUrl, // 🔹 Explicitly set the correct libraries path
@@ -57,4 +62,11 @@ document.addEventListener("DOMContentLoaded", function () {
                         });
 
                         console.log("🎉 H5P content should now be displayed!");
-                   
+                    }, 500); // ✅ Delay ensures everything loads properly
+                })
+                .catch(error => {
+                    console.error("❌ Error loading H5P:", error);
+                });
+        }
+    }, 100); // Check every 100ms if H5PStandalone is available
+});
