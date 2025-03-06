@@ -14,21 +14,16 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         console.log("🔍 DEBUG: Initial Generated h5pUrl =", h5pUrl);
 
-        // ✅ Force Remove Any Double /h5p.json Issue
-        h5pUrl = h5pUrl.replace(/\/h5p\.json\/h5p\.json$/, "/h5p.json");
-        console.log("🔍 DEBUG: Corrected h5pUrl =", h5pUrl);
+        // ✅ Fix the CSS file issue
+        const cssUrl = `${baseGitHubRaw}/my-h5p-content/${activity}/libraries/H5P.InteractiveBook-1.11/dist/h5p-interactive-book.css`;
 
         try {
             console.log("Fetching H5P JSON from:", h5pUrl);
             const response = await fetch(h5pUrl);
             if (!response.ok) throw new Error("H5P JSON File not found");
 
-            // ✅ Ensure H5PStandalone does NOT modify `h5pJsonPath`
-            const sanitizedH5PUrl = h5pUrl.endsWith("/h5p.json") ? h5pUrl.slice(0, -9) : h5pUrl;
-            console.log("🔍 DEBUG: Final sanitized H5P URL =", sanitizedH5PUrl);
-
             new H5PStandalone.H5P(container, {
-                h5pJsonPath: sanitizedH5PUrl,
+                h5pJsonPath: h5pUrl,
                 frameJs: `${baseGitHubRaw}/h5p-standalone/dist/frame.bundle.js`,
                 frameCss: `${baseGitHubRaw}/h5p-standalone/dist/styles/h5p.css`,
                 librariesPath: `${baseGitHubRaw}/my-h5p-content/${activity}/libraries/`
@@ -36,20 +31,12 @@ document.addEventListener('DOMContentLoaded', async function () {
 
             console.log("🎉 H5P Activity Loaded Successfully!");
 
-            // ✅ Manually add the CSS if it's missing
-            const cssUrl = `${baseGitHubRaw}/my-h5p-content/${activity}/libraries/H5P.InteractiveBook-1.11/dist/h5p-interactive-book.css`;
-            console.log("🔍 DEBUG: Checking if CSS exists:", cssUrl);
-            
-            const cssTest = await fetch(cssUrl);
-            if (cssTest.ok) {
-                console.log("✅ CSS File Exists, Injecting into the Page...");
-                const link = document.createElement("link");
-                link.rel = "stylesheet";
-                link.href = cssUrl;
-                document.head.appendChild(link);
-            } else {
-                console.error("❌ CSS File is Missing:", cssUrl);
-            }
+            // ✅ Manually Inject CSS into Page Head
+            const link = document.createElement("link");
+            link.rel = "stylesheet";
+            link.href = cssUrl;
+            document.head.appendChild(link);
+            console.log("✅ CSS Injected:", cssUrl);
 
         } catch (error) {
             console.error("❌ Error loading H5P:", error);
