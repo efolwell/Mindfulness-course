@@ -10,14 +10,14 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     if (activity) {
         const baseGitHubRaw = "https://raw.githubusercontent.com/efolwell/mindfulness-course/main";
-        const h5pUrl = `${baseGitHubRaw}/my-h5p-content/${activity}/h5p.json`; // ✅ Corrected
+        const h5pUrl = `${baseGitHubRaw}/my-h5p-content/${activity}/h5p.json`; // 
 
         try {
             const response = await fetch(h5pUrl);
             if (!response.ok) throw new Error("File not found");
 
             new H5PStandalone.H5P(container, {
-                h5pJsonPath: h5pUrl, // ✅ No extra /h5p.json appended
+                h5pJsonPath: h5pUrl, // 
                 frameJs: `${baseGitHubRaw}/h5p-standalone/dist/frame.bundle.js`,
                 frameCss: `${baseGitHubRaw}/h5p-standalone/dist/styles/h5p.css`,
                 librariesPath: `${baseGitHubRaw}/my-h5p-content/${activity}/libraries/`
