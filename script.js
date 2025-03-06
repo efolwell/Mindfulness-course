@@ -3,9 +3,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const urlParams = new URLSearchParams(window.location.search);
     const activity = urlParams.get("activity") || "activity1"; // Default to activity1 if none provided
 
-    // 🔹 CORRECT: Folder path only, without /h5p.json
+    // Correct JSON folder path
     const h5pFolderUrl = `https://efolwell.github.io/Mindfulness-course/my-h5p-content/${activity}`;
-
+    
     console.log("🔍 DEBUG: Fetching H5P JSON from:", `${h5pFolderUrl}/h5p.json`);
 
     fetch(`${h5pFolderUrl}/h5p.json`)
@@ -25,11 +25,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            // 🔹 CORRECT FIX: Provide only the folder path (NOT the JSON file)
+            // 🔹 Fix the library path issue by specifying the correct libraries path
             new H5PStandalone.H5P(h5pContainer, {
-                h5pJsonPath: h5pFolderUrl,  // Provide only the directory, NOT the file
+                h5pJsonPath: h5pFolderUrl,  // Only the folder path
                 frameJs: "https://cdn.jsdelivr.net/npm/h5p-standalone@1.3.0/dist/main.bundle.js",
-                frameCss: "https://cdn.jsdelivr.net/npm/h5p-standalone@1.3.0/dist/styles/h5p.css"
+                frameCss: "https://cdn.jsdelivr.net/npm/h5p-standalone@1.3.0/dist/styles/h5p.css",
+                librariesPath: `${h5pFolderUrl}/libraries` // 🔹 Explicitly set libraries path
             });
 
             console.log("🎉 H5P content should now be displayed!");
