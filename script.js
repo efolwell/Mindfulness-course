@@ -1,20 +1,72 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const container = document.getElementById('h5p-container');
+document.addEventListener("DOMContentLoaded", function () {
+    // ✅ Ensure H5PStandalone is available before running
+    const checkH5PLoaded = setInterval(() => {
+        if (typeof H5PStandalone !== "undefined") {
+            clearInterval(checkH5PLoaded); // Stop checking
+            console.log("✅ H5PStandalone is loaded!");
 
-    // Function to get URL parameters
-    function getQueryParam(param) {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get(param);
-    }
+            // Get activity from URL (if available)
+            const urlParams = new URLSearchParams(window.location.search);
+            const activity = urlParams.get("activity") || "activity1"; // Default to activity1 if none provided
 
-    // Get the selected activity from the URL
-    const activity = getQueryParam('activity');
+            // 🔹 Correct JSON and libraries folder paths
+            const h5pFolderUrl = `https://efolwell.github.io/Mindfulness-course/my-h5p-content/${activity}`;
+            const librariesUrl = `${h5pFolderUrl}/libraries`; // 🔹 Manually define libraries path
 
-    if (activity) {
-        new H5PStandalone.H5P(container, {
-            h5pJsonPath: `my-h5p-content/${activity}`,
-            frameJs: 'h5p-standalone/dist/frame.bundle.js',
-            frameCss: 'h5p-standalone/dist/styles/h5p.css'
-        });
-    }
+            console.log("🔍 DEBUG: Fetching H5P JSON from:", `${h5pFolderUrl}/h5p.json`);
+
+            fetch(`${h5pFolderUrl}/h5p.json`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`H5P JSON File not found (HTTP ${response.status})`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("✅ H5P JSON Loaded Successfully:", data);
+
+                    // Find the H5P container in the HTML
+                    const h5pContainer = document.getElementById("h5p-container");
+                    if (!h5pContainer) {
+                        console.error("❌ No #h5p-container found in HTML!");
+                        return;
+                    }
+
+                    // 🔹 Fix library paths dynamically for all dependencies
+                    const fixedLibrariesPath = (library) => `${librariesUrl}/${library}/library.json`;
+
+                    // 🔹 Override paths manually for known libraries
+                    const fixedDependencies = data.preloadedDependencies.map(dep => ({
+                        ...dep,
+                        path: fixedLibrariesPath(dep.machineName + '-' + dep.majorVersion + '.' + dep.minorVersion),
+                    }));
+
+                    console.log("🛠 Fixing dependencies:", fixedDependencies);
+
+                    // ✅ Check if H5P stylesheet loaded successfully
+                    setTimeout(() => {
+                        const h5pStylesheet = document.querySelector('link[href*="h5p.css"]');
+                        if (!h5pStylesheet || h5pStylesheet.sheet === null) {
+                            console.error("❌ H5P CSS still not loading. Styles may be broken.");
+                        } else {
+                            console.log("✅ H5P CSS is now loading correctly.");
+                        }
+
+                        // 🔹 Ensure H5P runs after a slight delay
+                        new H5PStandalone.H5P(h5pContainer, {
+                            h5pJsonPath: h5pFolderUrl,  
+                            librariesPath: librariesUrl, // 🔹 Explicitly set the correct libraries path
+                            frameJs: "https://cdn.jsdelivr.net/npm/h5p-standalone@1.3.0/dist/main.bundle.js",
+                            frameCss: "https://cdn.jsdelivr.net/npm/h5p-standalone@1.3.0/dist/styles/h5p.css",
+                            preloadedDependencies: fixedDependencies, // 🔹 Inject the correct paths for dependencies
+                        });
+
+                        console.log("🎉 H5P content should now be displayed!");
+                    }, 500); // ✅ Delay ensures everything loads properly
+                })
+                .catch(error => {
+                    console.error("❌ Error loading H5P:", error);
+                });
+        }
+    }, 100); // Check every 100ms if H5PStandalone is available
 });
