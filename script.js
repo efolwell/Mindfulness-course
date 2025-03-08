@@ -9,18 +9,21 @@ document.addEventListener('DOMContentLoaded', async function () {
     const activity = getQueryParam('activity');
 
     if (activity) {
-        const baseGitHubPages = "https://efolwell.github.io/Mindfulness-course"; // ✅ Capitalized Repo Name
-        let h5pUrl = `${baseGitHubPages}/my-h5p-content/${activity}/h5p.json`; // ✅ Fixed URL
+        const baseGitHubPages = "https://efolwell.github.io/Mindfulness-course"; // ✅ Correct Repo Capitalization
+        let h5pUrl = `${baseGitHubPages}/my-h5p-content/${activity}/h5p.json`; // ✅ Fixed URL (No double `/h5p.json`)
 
-        console.log("🔍 DEBUG: Generated h5pUrl =", h5pUrl);
+        console.log("🔍 DEBUG: Fetching H5P JSON from:", h5pUrl);
 
         try {
-            console.log("Fetching H5P JSON from:", h5pUrl);
             const response = await fetch(h5pUrl);
-            if (!response.ok) throw new Error("H5P JSON File not found");
+            if (!response.ok) {
+                throw new Error(`H5P JSON File not found (HTTP ${response.status})`);
+            }
+
+            const h5pData = await response.json(); // ✅ Ensure response is valid JSON
 
             new H5PStandalone.H5P(container, {
-                h5pJsonPath: h5pUrl,
+                h5pJsonPath: `${baseGitHubPages}/my-h5p-content/${activity}`, // ✅ Use only folder path (No double `h5p.json`)
                 frameJs: `${baseGitHubPages}/h5p-standalone/dist/frame.bundle.js`,
                 frameCss: `${baseGitHubPages}/h5p-standalone/dist/styles/h5p.css`,
                 librariesPath: `${baseGitHubPages}/my-h5p-content/${activity}/libraries/`
