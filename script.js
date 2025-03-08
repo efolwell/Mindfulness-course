@@ -9,34 +9,27 @@ document.addEventListener('DOMContentLoaded', async function () {
     const activity = getQueryParam('activity');
 
     if (activity) {
-        const baseGitHubPages = "https://efolwell.github.io/mindfulness-course"; // ✅ GitHub Pages Base URL
-        let h5pUrl = `${baseGitHubPages}/my-h5p-content/${activity}/h5p.json`;
+        const baseGitHubPages = "https://efolwell.github.io/Mindfulness-course"; // ✅ Correct Repo Capitalization
+        let h5pUrl = `${baseGitHubPages}/my-h5p-content/${activity}/h5p.json`; // ✅ Fixed URL (No double `/h5p.json`)
 
-        console.log("🔍 DEBUG: Generated h5pUrl =", h5pUrl);
+        console.log("🔍 DEBUG: Fetching H5P JSON from:", h5pUrl);
 
         try {
-            console.log("Fetching H5P JSON from:", h5pUrl);
             const response = await fetch(h5pUrl);
-            if (!response.ok) throw new Error("H5P JSON File not found");
+            if (!response.ok) {
+                throw new Error(`H5P JSON File not found (HTTP ${response.status})`);
+            }
+
+            const h5pData = await response.json(); // ✅ Ensure response is valid JSON
 
             new H5PStandalone.H5P(container, {
-                h5pJsonPath: h5pUrl,
+                h5pJsonPath: `${baseGitHubPages}/my-h5p-content/${activity}`, // ✅ Use only folder path (No double `h5p.json`)
                 frameJs: `${baseGitHubPages}/h5p-standalone/dist/frame.bundle.js`,
-                frameCss: `${baseGitHubPages}/h5p-standalone/dist/styles/h5p.css`, // ✅ Load CSS from GitHub Pages
+                frameCss: `${baseGitHubPages}/h5p-standalone/dist/styles/h5p.css`,
                 librariesPath: `${baseGitHubPages}/my-h5p-content/${activity}/libraries/`
             });
 
             console.log("🎉 H5P Activity Loaded Successfully!");
-
-            // ✅ Manually Inject CSS into Page Head
-            const cssUrl = `${baseGitHubPages}/h5p-standalone/dist/styles/h5p.css`;
-            console.log("🔍 DEBUG: Checking if CSS exists:", cssUrl);
-
-            const link = document.createElement("link");
-            link.rel = "stylesheet";
-            link.href = cssUrl;
-            document.head.appendChild(link);
-            console.log("✅ CSS Injected:", cssUrl);
 
         } catch (error) {
             console.error("❌ Error loading H5P:", error);
