@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>H5P Activity</title>
 
-    <!-- ✅ Fallback CSS loader (in case GitHub Pages fails) -->
+    <!-- ✅ Define Fallback CSS Function Before Use -->
     <script>
         function loadH5PFallbackCSS() {
             console.warn("⚠️ H5P CSS failed to load! Retrying from an alternate source...");
@@ -14,7 +14,9 @@
     </script>
 
     <!-- ✅ Ensure GitHub Pages loads H5P Styles -->
-    <link id="h5p-stylesheet" rel="stylesheet" href="https://efolwell.github.io/Mindfulness-course/h5p-standalone/dist/styles/h5p.css" onerror="loadH5PFallbackCSS()">
+    <link id="h5p-stylesheet" rel="stylesheet"
+          href="https://efolwell.github.io/Mindfulness-course/h5p-standalone/dist/styles/h5p.css"
+          onerror="loadH5PFallbackCSS()">
 
     <!-- ✅ Load H5P JavaScript -->
     <script defer src="https://efolwell.github.io/Mindfulness-course/h5p-standalone/dist/main.bundle.js"></script>
